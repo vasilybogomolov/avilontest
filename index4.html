@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Task 4</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="http://code.jquery.com/jquery-2.2.2.min.js"></script>
+</head>
+<body>
+    <div class="tooltip-wrapper">
+        <p>
+            Сделать тултип, который должен работать и на ссылках и на картинках.
+            Предусмотреть  возможность внедрять свой html в тултип, сохранив его при этом максимально простым
+            <a href="#" class="tooltip1" title="Текст тултипа">Cсылка тултип</a>
+            <a href="#" class="tooltip2" title="Текст тултипа 2">Cсылка тултип</a>
+            <img src="img/image001.png" alt="Текст тултипа картинки 3" class="tooltip">
+        </p>
+
+    </div>
+    <script>
+        $(document).ready(function () {
+
+            (function($){
+                var curElemIndex = 0;
+                jQuery.fn.addTooltip = function(options){
+
+                    var settings = $.extend({
+                        text: "",
+                    }, options);
+
+                    return this.each(function() {
+                        curElemIndex++;
+                        var textTooltipBlock = settings.text || ($(this).attr('title') ? $(this).attr('title') : $(this).attr('alt'))  ;
+                        var classTooltipBlock = 'tooltip-element_' + curElemIndex ;
+                        var tooltipBlock = '<div class="tooltip-element ' + classTooltipBlock + '">' + textTooltipBlock + '</div>';
+                        $(this).after(tooltipBlock);
+                        var heightTooltipBlock = $('.'+ classTooltipBlock +'').outerHeight();
+
+                        $(this).on('mousemove', function (e) {
+                            var x = e.pageX + 5;
+                            var y = e.pageY - ( heightTooltipBlock + 5 );
+                            console.log(x +' ' + y);
+                            $('.'+ classTooltipBlock +'').css({top:y, left:x, display: 'inline-block'});
+                        });
+
+                        $(this).on('mouseout', function () {
+                            $('.'+ classTooltipBlock +'').css({display: 'none'});
+                        });
+                    });
+                };
+            })(jQuery);
+
+            $('a').addTooltip();
+            $('img').addTooltip({text: "<p>Параграф</p><p>Параграф</p>"});
+        });
+    </script>
+</body>
+</html>

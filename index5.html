@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Task 5</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="http://code.jquery.com/jquery-2.2.2.min.js"></script>
+</head>
+<body>
+<div class="req-form-wrapper">
+    <form action="/" class="req-form">
+        <div class="field-block">
+            <input type="text" class="req req_name" placeholder="name">
+        </div>
+        <div class="field-block">
+            <input type="text" class="req req_name" placeholder="surname">
+        </div>
+        <div class="field-block">
+            <input type="text" class="req req_tel" placeholder="tel.">
+        </div>
+        <div class="field-block">
+            <input type="text" class="req req_email " placeholder="e-mail">
+        </div>
+        <input type="submit" value="send" disabled>
+    </form>
+</div>
+
+<script>
+    $(document).ready(function () {
+        (function ($) {
+            jQuery.fn.validateForm = function(options) {
+                function testInput(rule, elem, message) {
+                    var inputText = elem.val();
+                    console.log(inputText);
+                    var pattern = new RegExp(rule);
+                    var isError = pattern.test(inputText);
+
+                    if ( isError === false || inputText === ''  )
+                    {
+                        console.log(isError);
+                        console.log('error');
+                        if (elem.siblings('.error').length < 1 ) {
+                            elem.after('<p class="error">'+ message +'</p>')
+                        }else {
+                            elem.next('.error').text(message);
+                        }
+                    } else {
+                        elem.next('.error').remove();
+                    }
+                    if ($('.error').length > 0) {
+                        $('.req-form').children('input[type="submit"]').attr('disabled',true);
+                    } else {
+                        $('.req-form').children('input[type="submit"]').attr('disabled',false);
+                    }
+                }
+
+                return this.each(function() {
+                    var singleField = $(this);
+                    singleField.focusout(function () {
+                        if (singleField.hasClass('req_name')) {
+                            testInput('^[a-zA-Zа-яА-Я]+$',singleField, 'error name');
+                        }
+                        if (singleField.hasClass('req_email')) {
+                            testInput('^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,6}$',singleField, 'error email');
+                        }
+                        if (singleField.hasClass('req_tel')) {
+                            testInput('^([0-9]{11})+$',singleField, 'error tel');
+                        }
+
+                    });
+                    singleField.parents('.req-form').on('submit',function (e) {
+
+                        if (singleField.hasClass('req_name')) {
+                            testInput('^[a-zA-Zа-яА-Я]+$',singleField, 'error name');
+                        }
+                        if (singleField.hasClass('req_email')) {
+                            testInput('^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,6}$',singleField, 'error email');
+                        }
+                        if (singleField.hasClass('req_tel')) {
+                            testInput('^([0-9]{11})+$',singleField, 'error tel');
+                        }
+                        if ($('.error').length > 0 ) {
+                            e.preventDefault();
+
+                        }else {
+                            singleField.parents('.req-form').unbind();
+                        }
+                    });
+
+
+                });
+
+            };
+        })(jQuery);
+        $('.req').validateForm();
+    });
+</script>
+</body>
+</html>

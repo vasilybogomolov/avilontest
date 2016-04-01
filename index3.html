@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="http://code.jquery.com/jquery-2.2.2.min.js"></script>
+</head>
+<body>
+<h1>Tree</h1>
+    <div class="js-tree-container">
+    </div>
+<script>
+    $(document).ready(function () {
+
+
+
+        $.ajax({
+            url: 'http://localhost:63342/avilon/Test.json',
+            dataType : "json",
+            success: function (data) {
+                $('.js-tree-container').JSONtreeAppend(data);
+                console.log(data);
+            }
+        });
+
+
+        (function ($) {
+
+
+            function creatJsonTree(obj) {
+                var ul = $('<ul class="container"/>');
+                for (var key in obj) {
+
+
+                    if ($.type(obj[key]) == 'object' || $.type(obj[key]) == 'array') {
+                        var li = $('<li class="node-json viewClose"><div class="viewElement"></div></li>')
+                        li.append(key + ': ').append(creatJsonTree(obj[key]));
+                        ul.append(li);
+                    } else {
+                        var li = $('<li class="node-json viewLeaf"><div class="viewElement"></div></li>')
+                        li.append(key + ': ').append(obj[key]);
+                        ul.append(li);
+                    }
+
+                }
+                return ul;
+            }
+
+            $.fn.JSONtreeAppend = function (obj) {
+                return this.append(creatJsonTree(obj));
+            }
+        })(jQuery);
+
+        $('body').on('click', '.viewElement',function () {
+            console.log('test');
+            var node = $(this).parent();
+            if(node.hasClass('viewLeaf')){
+                return;
+            }
+            if ( node.hasClass('viewClose') ) {
+                node.removeClass('viewClose');
+                node.addClass('viewOpen');
+            } else {
+                node.removeClass('viewOpen');
+                node.addClass('viewClose');
+            }
+
+        });
+
+    });
+
+</script>
+</body>
+</html>
